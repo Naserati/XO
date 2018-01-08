@@ -19,7 +19,6 @@ public class XO {
             }
         });
     }
-
     static class XOFrame extends JFrame {
         public XOFrame() {
             setTitle("Крестики-Нолики");
@@ -27,25 +26,28 @@ public class XO {
             add(panel);
         }
     }
-
     static class XOPanel extends JPanel {
 
-        JButton displayN, displayNX, displayNO, displayS, b1, b2, b3, b4, b5, b6, b7, b8, b9;
-        JPanel panel, panelN;
+        JButton e1, e2, displayN, displayR, displayNX, displayNO, displayS, b1, b2, b3, b4, b5, b6, b7, b8, b9;
+        JPanel panel, panelN, panelR;
         Font BigFont = new Font("TimesRoman", Font.BOLD, 20);
         Font XOFont = new Font("TimesRoman", Font.BOLD, 150);
         private String lastCommand = "";
+        private int round = 1;
         private int xWin = 0;
         private int oWin = 0;
+        private int counter = 0;
         private final String x = "Крестики";
         private final String o = "Нолики";
         private ArrayList<JButton> buttons = new ArrayList<>();
 
         public XOPanel() {
             setLayout(new BorderLayout());
+
             panelN = new JPanel();
             panelN.setPreferredSize(new Dimension(500, 50));
             panelN.setLayout(new GridLayout(1,3));
+
             displayN = new JButton();
             displayN.setEnabled(false);
             displayNX = new JButton();
@@ -119,17 +121,15 @@ public class XO {
             for(int i = 0; i < buttons.size(); i++){
                 buttons.get(i).setFont(XOFont);
             }
-
             add(panel, BorderLayout.CENTER);
 
             displayS = new JButton();
             displayS.setEnabled(false);
             displayS.setPreferredSize(new Dimension(500, 50));
             displayS.setFont(BigFont);
-            displayS.setText("Ходят: " + x);
+            displayS.setText("Ходят: " + x + " | Раунд " + round);
             add(displayS, BorderLayout.SOUTH);
         }
-
         private class InListener implements ActionListener {
             public void actionPerformed(ActionEvent event) {
                 String command = event.getActionCommand();
@@ -139,12 +139,14 @@ public class XO {
                             if (!(lastCommand.equals("X"))) {
                                 buttons.get(k).setText("X");
                                 buttons.get(k).setEnabled(false);
-                                displayS.setText("Ходят: " + o);
+                                displayS.setText("Ходят: " + o + " | Раунд " + round);
+                                counter++;
                                 lastCommand = "X";
                             } else if (lastCommand.equals("X")) {
                                 buttons.get(k).setText("O");
                                 buttons.get(k).setEnabled(false);
-                                displayS.setText("Ходят: " + x);
+                                displayS.setText("Ходят: " + x + " | Раунд " + round);
+                                counter++;
                                 lastCommand = "O";
                             }
 
@@ -157,14 +159,23 @@ public class XO {
                                 (b4.getText().equals("X") && b5.getText().equals("X") && b6.getText().equals("X")) ||
                                 (b7.getText().equals("X") && b8.getText().equals("X") && b9.getText().equals("X"))) {
 
-                                JOptionPane.showMessageDialog(null, "Победили Крестики");
+                                counter = 0;
+                                round++;
                                 xWin++;
+                                if(xWin != 3){
+                                    JOptionPane.showMessageDialog(null, "В раунде победили Крестики");
+                                }
+                                else {
+                                    JOptionPane.showMessageDialog(null, "ПОЗДРАВЛЯЕМ! В игре победили Крестики");
+                                    xWin = oWin = 0;
+                                    round = 1;
+                                }
                                 displayN.setText(xWin + " : " + oWin);
                                 for (int i = 0; i < buttons.size(); i++) {
                                     buttons.get(i).setText("");
                                     buttons.get(i).setEnabled(true);
                                 }
-                                break;
+                                displayS.setText("Ходят: " + o + " | Раунд " + round);
 
                             } else if (b1.getText().equals("O") && b2.getText().equals("O") && b3.getText().equals("O") ||
                                        b1.getText().equals("O") && b5.getText().equals("O") && b9.getText().equals("O") ||
@@ -175,31 +186,36 @@ public class XO {
                                        b4.getText().equals("O") && b5.getText().equals("O") && b6.getText().equals("O") ||
                                        b7.getText().equals("O") && b8.getText().equals("O") && b9.getText().equals("O")) {
 
-                                JOptionPane.showMessageDialog(null, "Победили Нолики");
+                                counter = 0;
+                                round++;
                                 oWin++;
+                                if(oWin != 3){
+                                    JOptionPane.showMessageDialog(null, "В раунде победили Нолики");
+                                }
+                                else {
+                                    JOptionPane.showMessageDialog(null, "ПОЗДРАВЛЯЕМ! В игре победили Нолики");
+                                    xWin = oWin = 0;
+                                    round = 1;
+                                }
                                 displayN.setText(xWin + " : " + oWin);
                                 for (int i = 0; i < buttons.size(); i++) {
                                     buttons.get(i).setText("");
                                     buttons.get(i).setEnabled(true);
                                 }
-                                break;
+                                displayS.setText("Ходят: " + x + " | Раунд " + round);
                             }
-                            else if ((b1.getText().equals("X") || b1.getText().equals("O")) &&
-                                     (b2.getText().equals("X") || b2.getText().equals("O")) &&
-                                     (b3.getText().equals("X") || b3.getText().equals("O")) &&
-                                     (b4.getText().equals("X") || b4.getText().equals("O")) &&
-                                     (b5.getText().equals("X") || b5.getText().equals("O")) &&
-                                     (b6.getText().equals("X") || b6.getText().equals("O")) &&
-                                     (b7.getText().equals("X") || b7.getText().equals("O")) &&
-                                     (b8.getText().equals("X") || b8.getText().equals("O")) &&
-                                     (b9.getText().equals("X") || b9.getText().equals("O"))) {
-
+                            else if (counter == 9) {
+                                round++;
                                 JOptionPane.showMessageDialog(null, "Ничья");
                                 for (int i = 0; i < buttons.size(); i++) {
                                     buttons.get(i).setText("");
                                     buttons.get(i).setEnabled(true);
+                                    counter = 0;
                                 }
-                                break;
+                                if(lastCommand.equals("X")){
+                                    displayS.setText("Ходят: " + o + " | Раунд " + round);
+                                }
+                                else displayS.setText("Ходят: " + x + " | Раунд " + round);
                             }
                         }
                     }
