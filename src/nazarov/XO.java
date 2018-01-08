@@ -28,8 +28,8 @@ public class XO {
     }
     static class XOPanel extends JPanel {
 
-        JButton e1, e2, displayN, displayR, displayNX, displayNO, displayS, b1, b2, b3, b4, b5, b6, b7, b8, b9;
-        JPanel panel, panelN, panelR;
+        JButton displayN, displayNX, displayNO, displayS, b1, b2, b3, b4, b5, b6, b7, b8, b9;
+        JPanel panel, panelN;
         Font BigFont = new Font("TimesRoman", Font.BOLD, 20);
         Font XOFont = new Font("TimesRoman", Font.BOLD, 150);
         private String lastCommand = "";
